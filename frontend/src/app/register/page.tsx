@@ -111,7 +111,7 @@ export default function Signup() {
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
                                 className="w-full bg-[#03050C] border border-slate-700 text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-cyber-primary focus:ring-1 focus:ring-cyber-primary transition-colors"
-                                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                                placeholder="*******"
                                 required
                             />
                         </div>

@@ -1,0 +1,14 @@
+{
+  "message": "Packet processed",
+  "data": {
+    "sourceIP": "1.2.3.4",
+    "destinationPort": 4444,
+    "protocol": "TCP",
+    "packetSize": 5000,
+    "threatScore": 0,
+    "classification": "Normal",
+    "_id": "69b2ce6f06052c5daedfe6e0",
+    "timestamp": "2026-03-12T14:32:15.209Z",
+    "__v": 0
+  }
+}

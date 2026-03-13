@@ -1,0 +1,45 @@
+services:
+  # 1. Machine Learning Service (Python Flask)
+  - type: web
+    name: darktrace-ml-service
+    env: python
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PORT
+        value: 10000
+
+  # 2. Backend API (Node.js)
+  - type: web
+    name: darktrace-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        sync: false # Render will prompt you for your MongoDB Atlas connection string!
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ML_SERVICE_URL
+        fromService:
+          type: web
+          name: darktrace-ml-service
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: PORT
+        value: 10000
+
+  # 3. Frontend Dashboard (Next.js)
+  - type: web
+    name: darktrace-frontend
+    env: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: darktrace-backend
+          envVarKey: RENDER_EXTERNAL_URL
