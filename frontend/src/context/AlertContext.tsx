@@ -45,7 +45,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         // Global socket listener for alerts
-        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
         socket.on('new_traffic', (data: any) => {
             if (data.classification === 'Malicious' && Math.random() < 0.05) {
                 // Simulate occasional critical alerts from malicious traffic

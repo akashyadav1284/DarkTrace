@@ -24,7 +24,7 @@ export default function BlockedIPCenter() {
 
     const fetchBlocked = async () => {
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/admin/blocked', {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/blocked`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setBlocked(res.data);
@@ -42,7 +42,7 @@ export default function BlockedIPCenter() {
         e.preventDefault();
         setError('');
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/admin/block-ip',
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/block-ip`,
                 { ipAddress: ipToBlock, reason: reason || 'Manual block' },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -56,7 +56,7 @@ export default function BlockedIPCenter() {
 
     const handleUnblock = async (ipAddress: string) => {
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/admin/unblock-ip',
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/unblock-ip`,
                 { ipAddress },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

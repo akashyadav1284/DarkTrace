@@ -33,8 +33,8 @@ export default function MLInsightsDashboard() {
             try {
                 // Fetching initial mock baseline from ML service
                 const [resInsights, resForecast] = await Promise.all([
-                    axios.get('http://localhost:5001/api/ml/insights'),
-                    axios.get('http://localhost:5001/api/ml/predict-trend')
+                    axios.get(`${process.env.NEXT_PUBLIC_ML_URL || 'http://localhost:5001'}/api/ml/insights`),
+                    axios.get(`${process.env.NEXT_PUBLIC_ML_URL || 'http://localhost:5001'}/api/ml/predict-trend`)
                 ]);
                 setData(resInsights.data);
                 setForecastData(resForecast.data);
@@ -46,7 +46,7 @@ export default function MLInsightsDashboard() {
         fetchInsights();
 
         // Setup real-time listeners to make the dashboard live
-        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
         
         socket.on('new_traffic', () => {
             setData(prev => {
@@ -95,15 +95,15 @@ export default function MLInsightsDashboard() {
             });
         });
 
-        // Continue polling the forecasting model periodically
-        const interval = setInterval(() => {
-            axios.get('http://localhost:5001/api/ml/predict-trend')
-                 .then(res => setForecastData(res.data))
-                 .catch(err => console.error(err));
-        }, 30000);
+        // Periodically refresh the trend forecast (every 60 seconds)
+        const forecastInterval = setInterval(() => {
+            axios.get(`${process.env.NEXT_PUBLIC_ML_URL || 'http://localhost:5001'}/api/ml/predict-trend`)
+                .then(res => setForecastData(res.data))
+                .catch(err => console.error("Failed to refresh forecast:", err));
+        }, 60000);
 
         return () => {
-            clearInterval(interval);
+            clearInterval(forecastInterval);
             socket.disconnect();
         };
     }, []);

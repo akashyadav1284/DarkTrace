@@ -30,7 +30,7 @@ export default function DashboardOverview() {
         fetchHealth();
 
         // Setup WebSocket for Real-time Chart
-        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
         
         socket.on('new_traffic', (data: any) => {
             setTrafficData(prev => {
@@ -58,7 +58,7 @@ export default function DashboardOverview() {
 
     const fetchHealth = async () => {
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/health');
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/health`);
             setHealth(res.data);
         } catch (err) {
             console.error(err);
@@ -67,7 +67,7 @@ export default function DashboardOverview() {
 
     const fetchStats = async () => {
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/threat/stats');
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/threat/stats`);
             setStats(res.data);
         } catch (err) {
             console.error(err);

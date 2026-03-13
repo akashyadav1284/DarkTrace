@@ -22,7 +22,7 @@ export default function Signup() {
         setSuccess('');
 
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/auth/register', { name, email, password });
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/register`, { name, email, password });
             setSuccess('Clearance granted. Initializing system...');
             setTimeout(() => router.push('/login'), 2000);
         } catch (err: any) {

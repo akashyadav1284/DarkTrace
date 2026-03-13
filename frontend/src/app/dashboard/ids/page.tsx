@@ -25,7 +25,7 @@ export default function IdsDashboard() {
         // Fetch historical
         const fetchAlerts = async () => {
             try {
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/ids/live');
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/ids/live`);
                 console.log('IDS GET Success:', res.data.length);
                 setAlerts(res.data);
             } catch (err: any) {
@@ -35,7 +35,7 @@ export default function IdsDashboard() {
         fetchAlerts();
 
         // Listen for live
-        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
         socket.on('new_ids_alert', (newAlert: IdsAlert) => {
             setAlerts(prev => [newAlert, ...prev].slice(0, 100)); // Keep last 100
         });

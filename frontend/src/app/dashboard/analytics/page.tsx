@@ -27,11 +27,11 @@ export default function AnalyticsDashboard() {
 
     useEffect(() => {
         // Fetch initial standard history from backend
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/traffic/live')
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/traffic/live`)
             .then(res => setTrafficData(res.data))
             .catch(err => console.error(err));
 
-        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
         socket.on('new_traffic', (packet: TrafficData) => {
             setTrafficData(prev => {
                 const newData = [packet, ...prev];

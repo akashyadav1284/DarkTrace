@@ -38,7 +38,7 @@ export default function ThreatIntelligence() {
         setResult(null);
 
         try {
-            const res = await axios.get(http://localhost:5000/api/intelligence/lookup/${ip}`);
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/intelligence/lookup/${ip}`);
             setResult(res.data);
         } catch (err) {
             setError('Failed to fetch intelligence data. The threat intelligence API might be down.');
