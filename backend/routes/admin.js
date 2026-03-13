@@ -66,7 +66,7 @@ router.post('/unblock-ip', protect, admin, async (req, res) => {
 // @route   GET /api/admin/blocked
 // @desc    Get all blocked IPs
 // @access  Private/Admin
-router.get('/blocked', protect, admin, async (req, res) => {
+router.get('/blocked', protect, async (req, res) => {
     try {
         const blockedIPs = await BlockedIP.find().sort({ blockedAt: -1 });
         res.json(blockedIPs);
