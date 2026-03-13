@@ -31,6 +31,8 @@ services:
           envVarKey: RENDER_EXTERNAL_URL
       - key: PORT
         value: 10000
+      - key: NODE_VERSION
+        value: 20
 
   # 3. Frontend Dashboard (Next.js)
   - type: web
@@ -46,3 +48,9 @@ services:
           type: web
           name: darktrace-backend
           envVarKey: RENDER_EXTERNAL_URL
+      - key: NODE_VERSION
+        value: 20
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=400"
+      - key: NEXT_TELEMETRY_DISABLED
+        value: 1
