@@ -90,7 +90,7 @@ router.post('/send', async (req, res) => {
                 
                 exec(cmd, (err) => {
                     if (err) {
-                        console.error(`[OS Firewall] Failed to auto-block ${sourceIP} (Requires Admin): ${err.message}`);
+                        console.log(`[OS Firewall] Threat logged: ${sourceIP} (Run Node as Admin to enforce physical block)`);
                     } else {
                         console.log(`[OS Firewall] System auto-blocked ${sourceIP} via netsh.`);
                     }

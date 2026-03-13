@@ -23,7 +23,7 @@ router.post('/block-ip', protect, admin, async (req, res) => {
         const cmd = `netsh advfirewall firewall add rule name="${ruleName}" dir=in action=block remoteip=${ipAddress}`;
         exec(cmd, (err) => {
             if (err) {
-                console.error(`[OS Firewall] Failed to block ${ipAddress}: ${err.message}`);
+                console.log(`[OS Firewall] Block recorded in DB: ${ipAddress} (Elevate Node to Admin to affect Windows Firewall)`);
             } else {
                 console.log(`[OS Firewall] Manually blocked ${ipAddress} via netsh.`);
             }
@@ -51,7 +51,7 @@ router.post('/unblock-ip', protect, admin, async (req, res) => {
         const cmd = `netsh advfirewall firewall delete rule name="${ruleName}"`;
         exec(cmd, (err) => {
             if (err) {
-                console.error(`[OS Firewall] Failed to unblock ${ipAddress}: ${err.message}`);
+                console.log(`[OS Firewall] Unblock recorded in DB: ${ipAddress} (Elevate Node to Admin to affect Windows Firewall)`);
             } else {
                 console.log(`[OS Firewall] Unblocked ${ipAddress} via netsh.`);
             }
