@@ -40,7 +40,7 @@ services:
     env: node
     plan: free # Ensures the instance runs on Render's free tier
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --legacy-peer-deps && npm run build
     startCommand: npm start
     envVars:
       - key: NEXT_PUBLIC_API_URL
