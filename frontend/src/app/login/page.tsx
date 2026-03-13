@@ -30,7 +30,7 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#070B19] relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-[#050505] relative overflow-hidden">
             {/* Background decorations */}
             <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyber-primary opacity-10 blur-[120px] rounded-full pointer-events-none" />
             <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyber-secondary opacity-15 blur-[100px] rounded-full pointer-events-none" />
@@ -43,7 +43,7 @@ export default function Login() {
             >
                 <div className="flex justify-center mb-6">
                     <div className="p-4 bg-cyber-card border border-cyber-border rounded-xl cyber-glow">
-                        <Shield className="w-10 h-10 text-cyber-primary" />
+                        <img src="/logo.svg" alt="DarkTrace Shield" className="w-14 h-14 drop-shadow-[0_0_10px_rgba(255,0,51,0.8)]" />
                     </div>
                 </div>
 
@@ -71,7 +71,7 @@ export default function Login() {
                                 type="email"
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
-                                className="w-full bg-[#03050C] border border-slate-700 text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-cyber-primary focus:ring-1 focus:ring-cyber-primary transition-colors"
+                                className="w-full bg-[#050505] border border-slate-700 text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-cyber-primary focus:ring-1 focus:ring-cyber-primary transition-colors"
                                 placeholder="operator@darktrace.soc"
                                 required
                             />
@@ -88,8 +88,8 @@ export default function Login() {
                                 type="password"
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
-                                className="w-full bg-[#03050C] border border-slate-700 text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-cyber-primary focus:ring-1 focus:ring-cyber-primary transition-colors"
-                                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                                className="w-full bg-[#050505] border border-slate-700 text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:border-cyber-primary focus:ring-1 focus:ring-cyber-primary transition-colors"
+                                placeholder="******"
                                 required
                             />
                         </div>
@@ -98,7 +98,7 @@ export default function Login() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-cyber-primary hover:bg-cyan-400 text-[#03050C] font-bold py-3 rounded-lg flex items-center justify-center transition-all cyber-glow mt-4"
+                        className="w-full bg-cyber-primary hover:bg-cyber-secondary text-white font-bold py-3 rounded-lg flex items-center justify-center transition-all cyber-glow mt-4"
                     >
                         {loading ? 'AUTHENTICATING...' : 'INITIALIZE UPLINK'}
                     </button>

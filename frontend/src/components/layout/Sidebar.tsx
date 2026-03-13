@@ -28,7 +28,7 @@ export default function Sidebar() {
     return (
         <aside className="w-64 h-screen bg-[#03050C] border-r border-cyber-border flex flex-col pt-6 flex-shrink-0 overflow-y-auto">
             <div className="px-6 mb-10 flex items-center gap-3 cyber-glow text-cyber-primary w-max pb-1 border-b border-cyber-primary/30 mx-6">
-                <ShieldAlert className="w-8 h-8" />
+                <img src="/logo.svg" alt="DarkTrace Logo" className="w-10 h-10 drop-shadow-[0_0_10px_rgba(255,0,51,0.8)]" />
                 <h1 className="text-xl font-bold tracking-wider">DARKTRACE</h1>
             </div>
 
@@ -55,9 +55,9 @@ export default function Sidebar() {
                     return (
                         <Link key={link.name} href={link.href}>
                             <div
-                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive
-                                    ? 'bg-cyber-primary/10 text-cyber-primary border border-cyber-primary/30 cyber-glow'
-                                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+                                className={`relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all overflow-hidden ${isActive
+                                    ? 'bg-gradient-to-r from-cyber-primary/20 to-transparent text-cyber-primary border-y border-r border-y-transparent border-r-transparent border-l-2 border-l-cyber-primary cyber-glow'
+                                    : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-200 glitch-hover'
                                     }`}
                             >
                                 <Icon className="w-5 h-5" />

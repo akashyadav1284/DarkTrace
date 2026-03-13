@@ -94,9 +94,11 @@ export default function DashboardOverview() {
                     <h1 className="text-3xl font-bold text-white tracking-wide">SOC OVERVIEW</h1>
                     <p className="text-slate-400 text-sm mt-1">Real-time threat monitoring and network analytics.</p>
                 </div>
-                <div className="px-4 py-2 rounded-full border border-cyber-accent/30 bg-cyber-accent/10 text-cyber-accent text-sm font-semibold flex items-center gap-2 cyber-glow">
-                    <div className="w-2 h-2 rounded-full bg-cyber-accent animate-pulse" />
-                    SYSTEM SECURE
+                <div className={`px-4 py-2 rounded-full border text-sm font-semibold flex items-center gap-2 ${
+                    stats.totalThreats > 0 ? 'border-red-500/30 bg-red-500/10 text-red-500 cyber-glow-danger' : 'border-green-500/30 bg-green-500/10 text-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)]'
+                }`}>
+                    <div className={`w-2 h-2 rounded-full ${stats.totalThreats > 0 ? 'bg-red-500 animate-[ping_1s_infinite]' : 'bg-green-500 animate-pulse'}`} />
+                    {stats.totalThreats > 0 ? 'CRITICAL THREAT DETECTED' : 'SYSTEM SECURE'}
                 </div>
             </div>
 

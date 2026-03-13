@@ -65,10 +65,10 @@ export default function ThreatConsole() {
 
     const getLogColor = (severity: string) => {
         switch (severity) {
-            case 'info': return 'text-green-400';
-            case 'warn': return 'text-yellow-400';
-            case 'critical': return 'text-red-500 font-bold';
-            case 'action': return 'text-cyber-primary font-bold';
+            case 'info': return 'text-slate-400';
+            case 'warn': return 'text-orange-500';
+            case 'critical': return 'text-cyber-primary font-bold animate-pulse';
+            case 'action': return 'text-cyber-secondary font-bold';
             default: return 'text-slate-300';
         }
     };
@@ -78,26 +78,26 @@ export default function ThreatConsole() {
             <div className="flex justify-between items-center mb-2">
                 <div>
                     <h1 className="text-3xl font-bold text-white tracking-wide flex items-center gap-3">
-                        <TerminalIcon className="w-8 h-8 text-green-500" />
+                        <TerminalIcon className="w-8 h-8 text-cyber-primary" />
                         THREAT CONSOLE
                     </h1>
                     <p className="text-slate-400 text-sm mt-1">Hacker-style stream interface for granular real-time log monitoring.</p>
                 </div>
-                <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/30 px-4 py-2 rounded-lg">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-sm font-bold text-green-500 tracking-wider">LIVE STREAM</span>
+                <div className="flex items-center gap-2 bg-cyber-primary/10 border border-cyber-primary/30 px-4 py-2 rounded-lg cyber-glow">
+                    <div className="w-2 h-2 rounded-full bg-cyber-primary animate-pulse" />
+                    <span className="text-sm font-bold text-cyber-primary tracking-wider">LIVE STREAM</span>
                 </div>
             </div>
 
-            <div className="flex-1 bg-[#050B14] border border-cyan-500/30 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(0,255,255,0.05)] relative">
+            <div className="flex-1 bg-[#050505] border border-cyber-primary/30 rounded-xl overflow-hidden shadow-[0_0_15px_rgba(255,0,51,0.05)] relative">
                 {/* Scanline overlay effect */}
-                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-10 opacity-20" />
+                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(255,0,51,0.02),rgba(150,0,0,0.06))] bg-[length:100%_4px,3px_100%] z-10 opacity-20" />
                 
-                <div className="h-[75vh] min-h-[500px] p-6 overflow-y-auto font-mono text-sm leading-relaxed z-0 relative scrollbar-thin scrollbar-thumb-cyan-900 scrollbar-track-transparent">
+                <div className="h-[75vh] min-h-[500px] p-6 overflow-y-auto font-mono text-sm leading-relaxed z-0 relative scrollbar-thin scrollbar-thumb-cyber-primary scrollbar-track-transparent">
                     {logs.map((log) => (
-                        <div key={log.id} className="mb-1 hover:bg-white/5 transition-colors px-2 py-0.5 rounded -mx-2 flex gap-3">
+                        <div key={log.id} className="mb-1 hover:bg-cyber-primary/10 transition-colors px-2 py-0.5 rounded -mx-2 flex gap-3 typing-effect">
                             <span className="text-slate-600 shrink-0">[{new Date(log.timestamp).toLocaleTimeString('en-US', { hour12: false, fractionalSecondDigits: 3 })}]</span>
-                            <span className={`${getLogColor(log.severity)} break-words`}>{log.text}</span>
+                            <span className={`${getLogColor(log.severity)} break-words flex-1`}>{log.text}</span>
                         </div>
                     ))}
                     <div ref={bottomRef} className="h-4" />
