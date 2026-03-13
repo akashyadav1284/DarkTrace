@@ -3,6 +3,7 @@ services:
   - type: web
     name: darktrace-ml-service
     env: python
+    plan: free # Ensures the instance runs on Render's free tier
     rootDir: ml-service
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
@@ -14,6 +15,7 @@ services:
   - type: web
     name: darktrace-backend
     env: node
+    plan: free # Ensures the instance runs on Render's free tier
     rootDir: backend
     buildCommand: npm install
     startCommand: npm start
@@ -34,6 +36,7 @@ services:
   - type: web
     name: darktrace-frontend
     env: node
+    plan: free # Ensures the instance runs on Render's free tier
     rootDir: frontend
     buildCommand: npm install && npm run build
     startCommand: npm start
