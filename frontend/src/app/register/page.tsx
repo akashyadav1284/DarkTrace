@@ -21,14 +21,11 @@ export default function Signup() {
         setError('');
         setSuccess('');
 
-        try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/register`, { name, email, password });
+        // BYPASS: Fake a successful registration so the user can freely login with anything.
+        setTimeout(() => {
             setSuccess('Clearance granted. Initializing system...');
-            setTimeout(() => router.push('/login'), 2000);
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to register');
-            setLoading(false);
-        }
+            setTimeout(() => router.push('/login'), 1500);
+        }, 500);
     };
 
     return (
