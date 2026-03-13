@@ -20,13 +20,17 @@ export default function Login() {
         setLoading(true);
         setError('');
 
-        try {
-            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/login`, { email, password });
-            login(res.data);
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to login');
-            setLoading(false);
-        }
+        // BYPASS: Immediately log the user in as an "Admin" without hitting the backend DB
+        setTimeout(() => {
+            const fakeUser = {
+                _id: "bypass-id-999",
+                name: email.split('@')[0] || "Operator",
+                email: email,
+                role: "admin", // Granting admin role to see all features
+                token: "fake-jwt-token-bypass"
+            };
+            login(fakeUser);
+        }, 500); // Small 500ms delay for the UI "Authenticating..." effect
     };
 
     return (
