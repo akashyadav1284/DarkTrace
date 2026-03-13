@@ -17,7 +17,7 @@ export default function ThreatConsole() {
     const bottomRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const socket = io('http://localhost:5000');
+        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
 
         const addLog = (text: string, severity: LogLine['severity']) => {
             const newLog: LogLine = {

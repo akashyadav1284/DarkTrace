@@ -27,7 +27,7 @@ export default function ThreatLogs() {
     useEffect(() => {
         fetchLogs();
 
-        const socket = io('http://localhost:5000');
+        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
         socket.on('new_alert', (threat: ThreatEvent) => {
             setLogs(prev => [threat, ...prev]);
         });
@@ -39,7 +39,7 @@ export default function ThreatLogs() {
 
     const fetchLogs = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/threat/logs');
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/threat/logs');
             setLogs(res.data);
         } catch (err) {
             console.error(err);
@@ -55,7 +55,7 @@ export default function ThreatLogs() {
         setActionLoading(ip);
         try {
             await axios.post(
-                'http://localhost:5000/api/admin/block-ip',
+                `${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/admin/block-ip',
                 { ipAddress: ip, reason: 'Manual block from dashboard' },
                 { headers: { Authorization: `Bearer ${user.token}` } }
             );

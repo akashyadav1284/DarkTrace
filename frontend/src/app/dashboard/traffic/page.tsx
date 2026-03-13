@@ -24,7 +24,7 @@ export default function LiveTraffic() {
     useEffect(() => {
         fetchInitialTraffic();
 
-        const socket = io('http://localhost:5000');
+        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
 
         socket.on('new_traffic', (data: TrafficPacket) => {
             setTraffic(prev => {
@@ -47,7 +47,7 @@ export default function LiveTraffic() {
 
     const fetchInitialTraffic = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/traffic/live');
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/traffic/live');
             setTraffic(prev => {
                 const existingIds = new Set(prev.map(p => p._id));
                 const newItems = res.data.filter((p: TrafficPacket) => !existingIds.has(p._id));

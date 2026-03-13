@@ -20,7 +20,7 @@ export default function IncidentWorkflow() {
     const [lastThreat, setLastThreat] = useState<string | null>(null);
 
     useEffect(() => {
-        const socket = io('http://localhost:5000');
+        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
 
         socket.on('new_traffic', (data: any) => {
             setActiveStep('capture');

@@ -22,7 +22,7 @@ export default function AdminSettings() {
 
     const fetchBlockedIPs = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/admin/blocked', {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/admin/blocked', {
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
             setBlockedIPs(res.data);
@@ -33,7 +33,7 @@ export default function AdminSettings() {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/admin/users', {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/admin/users', {
                 headers: { Authorization: `Bearer ${user?.token}` }
             });
             setUsers(res.data);
@@ -45,7 +45,7 @@ export default function AdminSettings() {
     const handleUnblock = async (ipAddress: string) => {
         setLoadingAction(ipAddress);
         try {
-            await axios.post('http://localhost:5000/api/admin/unblock-ip',
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}/api/admin/unblock-ip',
                 { ipAddress },
                 { headers: { Authorization: `Bearer ${user?.token}` } }
             );

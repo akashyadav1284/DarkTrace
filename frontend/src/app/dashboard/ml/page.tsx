@@ -46,7 +46,7 @@ export default function MLInsightsDashboard() {
         fetchInsights();
 
         // Setup real-time listeners to make the dashboard live
-        const socket = io('http://localhost:5000');
+        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
         
         socket.on('new_traffic', () => {
             setData(prev => {

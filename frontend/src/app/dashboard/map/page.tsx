@@ -29,7 +29,7 @@ export default function AttackMap() {
     const [protocolStats, setProtocolStats] = useState<Record<string, number>>({});
 
     useEffect(() => {
-        const socket = io('http://localhost:5000');
+        const socket = io(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000')}`);
 
         // Mock server coordinates (e.g., somewhere in central US)
         const serverLocation = { lng: -95.7129, lat: 37.0902 };
