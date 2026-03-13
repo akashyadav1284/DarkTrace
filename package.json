@@ -1,0 +1,21 @@
+{
+  "name": "cyber",
+  "version": "1.0.0",
+  "description": "A web-based platform that monitors incoming network traffic in real time, detects suspicious activities using machine learning, visualizes threats, and provides automated incident response capabilities. The system mimics an enterprise SOC (Security Operation Center) dashboard.",
+  "main": "index.js",
+  "scripts": {
+    "start:backend": "cd backend && node index.js",
+    "start:ml": "cd ml-service && .\\venv\\Scripts\\activate && python app.py",
+    "start:frontend": "cd frontend && npm run dev",
+    "start:all": "concurrently \"npm run start:backend\" \"npm run start:ml\" \"npm run start:frontend\"",
+    "simulate": "node scripts/simulator.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.13.5",
+    "concurrently": "^9.2.1"
+  }
+}
