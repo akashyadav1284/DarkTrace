@@ -38,7 +38,8 @@ router.post('/send', async (req, res) => {
             });
         } catch (mlError) {
             console.error('ML Service Error:', mlError.message);
-            mlResponse = { data: { anomalyScore: 0, classification: `Normal (Error: ${mlError.message})`, threatLevel: 0 } };
+            // Must strictly use valid Enum for classification: 'Normal', 'Suspicious', 'Malicious'
+            mlResponse = { data: { anomalyScore: 0, classification: 'Normal', threatLevel: 0 } };
         }
 
         const { anomalyScore, classification, threatLevel } = mlResponse.data;
