@@ -46,15 +46,14 @@ export function AlertProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         // Global socket listener for alerts
         const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
-        socket.on('new_traffic', (data: any) => {
-            if (data.classification === 'Malicious' && Math.random() < 0.05) {
-                // Simulate occasional critical alerts from malicious traffic
-                addAlert({
-                    title: 'CRITICAL THREAT DETECTED',
-                    message: `Malicious traffic blocked from ${data.sourceIP} on port ${data.destinationPort}`,
-                    severity: 'critical'
-                });
-            }
+        
+        socket.on('ip_blocked', (data: any) => {
+            // Authentic OS-Level Block Pipeline
+            addAlert({
+                title: 'CRITICAL THREAT: OS FIREWALL INITIATED',
+                message: `Malicious physical network packet blocked from ${data.ipAddress}. Pipeline severed.`,
+                severity: 'critical'
+            });
         });
 
         return () => {

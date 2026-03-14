@@ -61,7 +61,11 @@ router.post('/send', async (req, res) => {
             mlResponse = { data: { anomalyScore: fallbackThreat, classification: fallbackClass, threatLevel: fallbackThreat } };
         }
 
-        const { classification } = mlResponse.data;
+        let { classification } = mlResponse.data;
+
+        // Hard Override System Rule: Irrespective of ML model intelligence, a >5000 byte network payload is fundamentally hostile.
+        if (packetSize > 5000) classification = 'Malicious';
+        else if (packetSize > 1500) classification = 'Suspicious';
         
         // Inject pseudo-random variance so scores bounce realistically instead of sitting exactly at 10, 65, and 95
         let threatLevel = 0;
