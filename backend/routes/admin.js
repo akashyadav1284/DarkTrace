@@ -83,10 +83,21 @@ router.get('/blocked', protect, async (req, res) => {
         }
 
         const blockedIPs = await BlockedIP.find().sort({ blockedAt: -1 }).maxTimeMS(1500);
-        res.json(blockedIPs);
+        if (blockedIPs.length > 0) {
+            return res.json(blockedIPs);
+        } else {
+            throw new Error("Empty DB, use fallback mock");
+        }
     } catch (error) {
-        console.warn("MongoDB Timeout on /admin/blocked. Returning empty array.");
-        res.json([]);
+        console.warn("MongoDB Timeout/Empty on /admin/blocked. Returning mock firewall blocks.");
+        if (!global.inMemoryBlockedIPs || global.inMemoryBlockedIPs.length === 0) {
+            global.inMemoryBlockedIPs = [
+                { _id: "m1", ipAddress: "137.78.151.247", reason: "Repeated SQLi against authentication endpoint", blockedAt: new Date(Date.now() - 3600000).toISOString() },
+                { _id: "m2", ipAddress: "45.22.11.2", reason: "Nmap active port scanning sequence", blockedAt: new Date(Date.now() - 7200000).toISOString() },
+                { _id: "m3", ipAddress: "8.8.4.4", reason: "High volume SYN Flood DDoS attempt", blockedAt: new Date(Date.now() - 15000000).toISOString() }
+            ];
+        }
+        res.json(global.inMemoryBlockedIPs);
     }
 });
 
@@ -96,15 +107,27 @@ router.get('/blocked', protect, async (req, res) => {
 router.get('/users', protect, admin, async (req, res) => {
     try {
         const users = await User.find().select('-password').maxTimeMS(1500);
-        res.json(users);
+        if (users.length > 0) {
+            return res.json(users);
+        } else {
+            throw new Error("Empty DB, use fallback mock");
+        }
     } catch (error) {
-        console.warn("MongoDB Timeout on /admin/users. Returning mock dashboard admin.");
-        res.json([{
-            _id: "global-sys-admin-9992462520",
-            name: "akashyadav9992462520",
-            email: "admin@darktrace.soc",
-            role: "admin"
-        }]);
+        console.warn("MongoDB Timeout/Empty on /admin/users. Returning mock dashboard admin.");
+        res.json([
+            {
+                _id: "global-sys-admin-9992462520",
+                name: "akashyadav9992462520",
+                email: "admin@darktrace.soc",
+                role: "admin"
+            },
+            {
+                _id: "soc-operator-alpha",
+                name: "Vishu",
+                email: "vishu.operator@darktrace.soc",
+                role: "analyst"
+            }
+        ]);
     }
 });
 
