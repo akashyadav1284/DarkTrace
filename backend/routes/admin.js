@@ -68,10 +68,11 @@ router.post('/unblock-ip', protect, admin, async (req, res) => {
 // @access  Private/Admin
 router.get('/blocked', protect, async (req, res) => {
     try {
-        const blockedIPs = await BlockedIP.find().sort({ blockedAt: -1 });
+        const blockedIPs = await BlockedIP.find().sort({ blockedAt: -1 }).maxTimeMS(1500);
         res.json(blockedIPs);
     } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+        console.warn("MongoDB Timeout on /admin/blocked. Returning empty array.");
+        res.json([]);
     }
 });
 
