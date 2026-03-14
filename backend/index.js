@@ -142,4 +142,9 @@ if (Tail) {
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    
+    // Automatically spool up synthetic web traffic internally for the live dashboard analytics
+    require('./scripts/simulate_web_traffic');
+});
