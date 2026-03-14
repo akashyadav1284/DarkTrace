@@ -126,12 +126,29 @@ router.post('/send', async (req, res) => {
             // Broadcast IMMDIATELY
             req.io.emit('new_alert', threatEventPayload);
 
+            // Store internally so frontend Stats/Overview dashboards can perform fast math without MongoDB
+            global.inMemoryThreats = global.inMemoryThreats || [];
+            global.inMemoryThreats.unshift(threatEventPayload);
+            if (global.inMemoryThreats.length > 500) {
+                global.inMemoryThreats.pop();
+            }
+
             // Save in background
             ThreatEvent.create(threatEventPayload).catch(e => console.error("Could not save threat to DB."));
 
             if (severity === 'Critical') {
+                // Instantly sync to Global RAM cache for BlockedIP pages
+                const blockReason = 'Auto-blocked due to critical threat score';
+                global.inMemoryBlockedIPs = global.inMemoryBlockedIPs || [];
+                global.inMemoryBlockedIPs.unshift({
+                    _id: Math.random().toString(36).substring(7),
+                    ipAddress: sourceIP,
+                    reason: blockReason,
+                    blockedAt: new Date()
+                });
+
                 // Auto-block in background
-                BlockedIP.create({ ipAddress: sourceIP, reason: 'Auto-blocked due to critical threat score' }).catch(e => {});
+                BlockedIP.create({ ipAddress: sourceIP, reason: blockReason }).catch(e => {});
                 
                 // OS-Level Firewall Block (Windows)
                 const ruleName = `DarkTrace-SOC-Block-${sourceIP.replace(/\./g, '-')}`;
