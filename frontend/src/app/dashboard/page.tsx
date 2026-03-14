@@ -46,6 +46,10 @@ export default function DashboardOverview() {
             setStats(s => ({...s, activeConnections: (s.activeConnections || 1245) + 1}));
         });
 
+        socket.on('new_alert', () => {
+            fetchStats();
+        });
+
         const interval = setInterval(() => {
             fetchHealth();
         }, 10000);
