@@ -6,7 +6,7 @@ const connectDB = async () => {
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
         console.error(`Error connecting to MongoDB: ${error.message}`);
-        process.exit(1);
+        console.warn("MongoDB is completely unreachable. Continuing in detached/memory mode for UI demonstration...");
     }
 };
 

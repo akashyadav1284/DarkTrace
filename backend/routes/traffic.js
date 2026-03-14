@@ -22,10 +22,14 @@ router.post('/send', async (req, res) => {
     const { sourceIP, destinationPort, protocol, packetSize } = req.body;
 
     try {
-        // 1. Check if IP is blocked
-        const isBlocked = await BlockedIP.findOne({ ipAddress: sourceIP });
-        if (isBlocked) {
-            return res.status(403).json({ message: 'Connection dropped. IP is blocked.' });
+        // 1. Check if IP is blocked (wrapped in try-catch to prevent DB timeout from freezing websocket)
+        try {
+            const isBlocked = await BlockedIP.findOne({ ipAddress: sourceIP }).maxTimeMS(2000); // 2 second max timeout
+            if (isBlocked) {
+                return res.status(403).json({ message: 'Connection dropped. IP is blocked.' });
+            }
+        } catch (dbError) {
+            console.warn("DB Timeout on BlockedIP check. Continuing to allow traffic...");
         }
 
         // 2. Send to ML service for anomaly detection
@@ -51,8 +55,9 @@ router.post('/send', async (req, res) => {
         const lng = geo ? geo.ll[1] : (Math.random() * 360 - 180);
         const country = geo ? geo.country : 'Unknown';
 
-        // 3. Save Traffic Log
-        const newLog = await TrafficLog.create({
+        // 3. Prepare Traffic Log object
+        const newLogPayload = {
+            _id: Math.random().toString(36).substring(7), // Fake ID for immediate frontend rendering
             sourceIP,
             destinationPort,
             protocol,
@@ -61,29 +66,39 @@ router.post('/send', async (req, res) => {
             classification,
             lat,
             lng,
-            country
-        });
+            country,
+            timestamp: new Date()
+        };
 
-        // Broadcast to clients via Socket.io
-        req.io.emit('new_traffic', newLog);
+        // Broadcast to clients via Socket.io IMMEDIATELY (Decouple from DB connection speed)
+        req.io.emit('new_traffic', newLogPayload);
+
+        // Attempt to save Traffic Log to Database in background
+        TrafficLog.create(newLogPayload).catch(e => console.error("Could not save packet to DB, but websocket broadcast succeeded."));
 
         // 4. If malicious, create Threat Event and Broadcast Alert
         if (classification === 'Malicious' || classification === 'Suspicious') {
             const severity = threatLevel > 80 ? 'Critical' : (threatLevel > 60 ? 'High' : (threatLevel > 30 ? 'Medium' : 'Low'));
             const attackType = classification === 'Malicious' ? 'Potential Attack (DDoS/Malware/Scan)' : 'Unusual Behavior';
 
-            const threatEvent = await ThreatEvent.create({
+            const threatEventPayload = {
+                _id: Math.random().toString(36).substring(7),
                 attackType,
                 ipAddress: sourceIP,
                 severity,
-                actionTaken: severity === 'Critical' ? 'Blocked' : 'Alerted'
-            });
+                actionTaken: severity === 'Critical' ? 'Blocked' : 'Alerted',
+                timestamp: new Date()
+            };
 
-            req.io.emit('new_alert', threatEvent);
+            // Broadcast IMMDIATELY
+            req.io.emit('new_alert', threatEventPayload);
+
+            // Save in background
+            ThreatEvent.create(threatEventPayload).catch(e => console.error("Could not save threat to DB."));
 
             if (severity === 'Critical') {
-                // Auto-block
-                await BlockedIP.create({ ipAddress: sourceIP, reason: 'Auto-blocked due to critical threat score' });
+                // Auto-block in background
+                BlockedIP.create({ ipAddress: sourceIP, reason: 'Auto-blocked due to critical threat score' }).catch(e => {});
                 
                 // OS-Level Firewall Block (Windows)
                 const ruleName = `DarkTrace-SOC-Block-${sourceIP.replace(/\./g, '-')}`;
@@ -99,7 +114,7 @@ router.post('/send', async (req, res) => {
             }
         }
 
-        res.status(200).json({ message: 'Packet processed', data: newLog });
+        res.status(200).json({ message: 'Packet processed', data: newLogPayload });
 
     } catch (error) {
         console.error(error);
