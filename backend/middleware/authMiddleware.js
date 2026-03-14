@@ -8,6 +8,20 @@ const protect = async (req, res, next) => {
         try {
             token = req.headers.authorization.split(' ')[1];
 
+            // ----------------------------------------------------
+            // DEMO MODE BYPASS
+            // If the user logged in using the fake "any password" frontend wrapper
+            // ----------------------------------------------------
+            if (token === "fake-jwt-token-bypass") {
+                req.user = { 
+                    _id: "bypass-id-999", 
+                    name: "Operator Sandbox", 
+                    email: "operator@darktrace.soc", 
+                    role: "admin" 
+                };
+                return next();
+            }
+
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

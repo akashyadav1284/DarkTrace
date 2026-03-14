@@ -133,6 +133,28 @@ router.post('/send', async (req, res) => {
                 global.inMemoryThreats.pop();
             }
 
+            // Sync to IDS Sensors Dashboard dynamically
+            if (severity === 'Critical' || severity === 'High') {
+                const idsPayload = {
+                    _id: Math.random().toString(36).substring(7),
+                    timestamp: new Date().toISOString(),
+                    sourceIP: sourceIP,
+                    destinationIP: destinationIP,
+                    attackType: attackType,
+                    signatureId: severity === 'Critical' ? 'ET TROJAN Simulated' : 'ET DOS Simulated',
+                    severity: severity,
+                    message: `Simulated Sensor Trigger: ${attackType}`
+                };
+                global.inMemoryIdsAlerts = global.inMemoryIdsAlerts || [];
+                global.inMemoryIdsAlerts.unshift(idsPayload);
+                if (global.inMemoryIdsAlerts.length > 500) global.inMemoryIdsAlerts.pop();
+                req.io.emit('new_ids_alert', idsPayload);
+
+                // Attempt OS-level save
+                const IdsAlert = require('../models/IdsAlert');
+                IdsAlert.create(idsPayload).catch(e => {});
+            }
+
             // Save in background
             ThreatEvent.create(threatEventPayload).catch(e => console.error("Could not save threat to DB."));
 
