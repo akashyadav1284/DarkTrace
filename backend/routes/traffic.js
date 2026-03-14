@@ -161,13 +161,16 @@ router.post('/send', async (req, res) => {
             if (severity === 'Critical') {
                 // Instantly sync to Global RAM cache for BlockedIP pages
                 const blockReason = 'Auto-blocked due to critical threat score';
-                global.inMemoryBlockedIPs = global.inMemoryBlockedIPs || [];
-                global.inMemoryBlockedIPs.unshift({
+                const blockedDetails = {
                     _id: Math.random().toString(36).substring(7),
                     ipAddress: sourceIP,
                     reason: blockReason,
                     blockedAt: new Date()
-                });
+                };
+                global.inMemoryBlockedIPs = global.inMemoryBlockedIPs || [];
+                global.inMemoryBlockedIPs.unshift(blockedDetails);
+
+                req.io.emit('ip_blocked', blockedDetails);
 
                 // Auto-block in background
                 BlockedIP.create({ ipAddress: sourceIP, reason: blockReason }).catch(e => {});

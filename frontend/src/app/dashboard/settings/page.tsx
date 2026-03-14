@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 import { useAuth } from '@/context/AuthContext';
 import { Settings, Shield, Ban, Users, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,6 +19,18 @@ export default function AdminSettings() {
             fetchBlockedIPs();
             fetchUsers();
         }
+
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
+        socket.on('ip_blocked', (newBlock: any) => {
+            setBlockedIPs((prev: any[]) => {
+                if (prev.some(b => b.ipAddress === newBlock.ipAddress)) return prev;
+                return [newBlock, ...prev];
+            });
+        });
+
+        return () => {
+            socket.disconnect();
+        };
     }, [user]);
 
     const fetchBlockedIPs = async () => {

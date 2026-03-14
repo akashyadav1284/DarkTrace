@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 import { useAuth } from '@/context/AuthContext';
 import { NeonPanel } from '@/components/ui/NeonPanel';
 import { ShieldBan, Lock, Unlock, Search, Plus } from 'lucide-react';
@@ -36,6 +37,19 @@ export default function BlockedIPCenter() {
 
     useEffect(() => {
         if (token) fetchBlocked();
+
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000');
+        socket.on('ip_blocked', (newBlock: BlockedIP) => {
+            setBlocked(prev => {
+                // Prevent duplicates
+                if (prev.some(b => b.ipAddress === newBlock.ipAddress)) return prev;
+                return [newBlock, ...prev];
+            });
+        });
+
+        return () => {
+            socket.disconnect();
+        };
     }, [token]);
 
     const handleBlock = async (e: React.FormEvent) => {
