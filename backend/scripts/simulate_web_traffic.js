@@ -13,11 +13,28 @@ function generateRandomIP() {
 
 async function sendFakeTraffic() {
     try {
+        const protocols = ['TCP', 'UDP', 'ICMP'];
+        const commonPorts = [80, 443, 22, 21, 3306, 5432, 27017, 8080];
+        const threatPorts = [23, 25, 445, 3389]; // Known vulnerable/attacker ports
+        
+        // 15% chance of a massive DDoS packet, 20% chance of a suspicious terminal scan
+        const isMalicious = Math.random() < 0.15;
+        const isSuspicious = !isMalicious && Math.random() < 0.20;
+
+        let port = commonPorts[Math.floor(Math.random() * commonPorts.length)];
+        let size = Math.floor(Math.random() * 1500) + 40; // Normal bytes
+
+        if (isMalicious) {
+            size = Math.floor(Math.random() * 10000) + 5000; // Trigger "Malicious" ML Rule (packet > 5000)
+        } else if (isSuspicious) {
+            port = threatPorts[Math.floor(Math.random() * threatPorts.length)]; // Trigger "Suspicious" ML Rule
+        }
+
         const payload = {
             sourceIP: generateRandomIP(),
-            destinationPort: commonPorts[Math.floor(Math.random() * commonPorts.length)],
+            destinationPort: port,
             protocol: protocols[Math.floor(Math.random() * protocols.length)],
-            packetSize: Math.floor(Math.random() * 1500) + 40, // 40 to 1540 bytes
+            packetSize: size,
         };
 
         await axios.post(API_URL, payload);

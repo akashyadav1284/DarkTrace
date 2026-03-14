@@ -41,9 +41,20 @@ router.post('/send', async (req, res) => {
                 protocol
             });
         } catch (mlError) {
-            console.error('ML Service Error:', mlError.message);
-            // Must strictly use valid Enum for classification: 'Normal', 'Suspicious', 'Malicious'
-            mlResponse = { data: { anomalyScore: 0, classification: 'Normal', threatLevel: 0 } };
+            // Render Free Tier can take 50 seconds to wake the Python ML cluster up.
+            // If the ML connection fails, we immediately switch to a raw Node.js heuristic fallback!
+            let fallbackClass = 'Normal';
+            let fallbackThreat = 10;
+            
+            if (packetSize > 5000) { 
+                fallbackClass = 'Malicious'; 
+                fallbackThreat = 95; // DDoS
+            } else if ([23, 25, 445, 3389].includes(destinationPort)) { 
+                fallbackClass = 'Suspicious'; 
+                fallbackThreat = 65; // Scan
+            }
+            
+            mlResponse = { data: { anomalyScore: fallbackThreat, classification: fallbackClass, threatLevel: fallbackThreat } };
         }
 
         const { anomalyScore, classification, threatLevel } = mlResponse.data;
